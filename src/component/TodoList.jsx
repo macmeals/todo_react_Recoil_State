@@ -1,23 +1,19 @@
 // "@emotion/react"には以下が必須
 /** @jsxImportSource @emotion/react */
 
-// import { useLocation } from "react-router-dom"
-// import { useState } from "react"
-// import { useEffect } from "react"
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import { LinkText } from "./LinkText"
 import { Button } from "./Button"
 import { useCallback } from "react"
-// import axios from "axios"
 import { useEffect } from "react"
 
 // カスタムHook（JSONPlaceHolder用の）
 import { useTextGet } from "../hook/useTextGet"
 
-// グローバルStateを取得
-import { useContext } from "react"
-import { TodoListContext } from "./providers/TodoListProvider"
+//RecoilとAtomを読み込み
+import { useRecoilState } from "recoil"
+import { TodoListAtom } from "../atoms/TodoListAtom"
 
 export const TodoList = () => {
   const todoStyle = css`
@@ -60,67 +56,31 @@ export const TodoList = () => {
     }
   `
 
-  // const { state } = useLocation() // 画面変移（Linkコンポーネント）のPropを受け取る為のHook。
-
-  // グローバルStateの変数 incompleteTodos、setIncompleteTodosをuseContext利用で取り出す。
-  const { incompleteTodos, setIncompleteTodos } = useContext(TodoListContext)
-
-  // const [jsontext, setjsonText] = useState([])
-
-  // 画面変移時に一度だけ、TodoListのStateを更新する。
-  // その為UseEffectの第二変数に[]を記載
-  // useEffect(() => {
-  //   setTodoLists(state.state)
-  // }, [])
+  // atomから呼び出した変数TodoListAtomを初期値にし、useRecoilStateを使ってstate管理を行う。
+  const [incompleteAtom, setIncompleteAtom] = useRecoilState(TodoListAtom)
 
   // todoリストを削除する関数onDeleteTodoを定義
   const onDeleteTodo = useCallback(
     (index) => {
       // const deleteTodos = [...todoLists] // 削除する対象のデータ配列を関数deleteTodoに格納
-      const deleteTodos = [...incompleteTodos] // 削除する対象のデータ配列を関数deleteTodoに格納
+      const deleteTodos = [...incompleteAtom] // 削除する対象のデータ配列を関数deleteTodoに格納
       deleteTodos.splice(index, 1) // index番号から１番目の要素を削除
-      // setTodoLists(deleteTodos)
-      // setTodoListsでtodoListsにstate保存
-
       // グローバルStateにdeleteTodosを格納
-      setIncompleteTodos(deleteTodos)
+      setIncompleteAtom(deleteTodos)
     },
     // [todoLists]
     // 第二引数にグローバルStateにdeleteTodosを格納
-    [incompleteTodos]
+    [incompleteAtom]
   )
 
-  // todoリストを完了（completeFlagをTrueにする）関数onCompleteTodoを定義
-  const onCompleteTodo = useCallback(
-    (index) => {
-      // const CompleteTodos = [...todoLists] // 完了する対象のデータ配列を関数CompTodosTodoに格納
+  // todoリストを完了（completeFlagをTrueにする）
+  const onCompleteTodoAtom = (index) => {
+    const completeTodos = [...incompleteAtom]
+    completeTodos[index].completeFlag = true
 
-      // グローバルStateを関数CompTodosTodoに格納
-      const CompleteTodos = [...incompleteTodos]
-      CompleteTodos[index].completeFlag = true //対象のデータ配列のCompleteFlagをTrueにする
-      // setTodoLists(CompleteTodos) // setTodoListsでtodoListsにstate保存
-
-      // グローバルStateにCompleteTodosを格納
-      setIncompleteTodos(CompleteTodos)
-    },
-    // [todoLists]
-    // 第二引数にグローバルStateにdeleteTodosを格納
-    [incompleteTodos]
-  )
-
-  // const textApi = async () => {
-  //   try {
-  //     // jsonPlaceholderからユーザー情報をaxiosで取得
-  //     const response = await axios.get(
-  //       "https://jsonplaceholder.typicode.com/todos"
-  //     )
-  //     // jsonPlaceholderからユーザー情報をStateで保存
-  //     setjsonText(response.data[1].title)
-  //   } catch {
-  //     console.log("テキストが取得できませんでした")
-  //   }
-  // }
-  // textApi()
+    setIncompleteAtom(completeTodos)
+    console.log(incompleteAtom)
+  }
 
   // カスタムHookから変数useImage,関数imageFetchを取得
   const { useJson, jsonFetch } = useTextGet()
@@ -149,7 +109,7 @@ export const TodoList = () => {
       </div>
       <ul css={todoListStyle}>
         {/* {todoLists.map((todos, index) => { */}
-        {incompleteTodos.map((todos, index) => {
+        {incompleteAtom.map((todos, index) => {
           return (
             <StyledList key={todos.id} todoflag={todos.completeFlag}>
               <p>{todos.from}</p>
@@ -158,7 +118,10 @@ export const TodoList = () => {
               {/* Buttonコンポーネントにアロー関数で関数onDeleteTodo(index)をPropsで渡す。indexは引数 */}
               <Button onClickEvent={() => onDeleteTodo(index)}>削除</Button>
               {/* Buttonコンポーネントにアロー関数で関数onCompleteTodo(index)をPropsで渡す。indexは引数 */}
-              <Button onClickEvent={() => onCompleteTodo(index)}>完了</Button>
+              {/* <Button onClickEvent={() => onCompleteTodo(index)}>完了</Button> */}
+              <Button onClickEvent={() => onCompleteTodoAtom(index)}>
+                完了Atom
+              </Button>
             </StyledList>
           )
         })}

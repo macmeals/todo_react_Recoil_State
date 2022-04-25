@@ -11,6 +11,10 @@ import { LinkText } from "./LinkText"
 import { Button } from "./Button"
 import { Image } from "./Image"
 
+//Recoilを読み込み
+import { useRecoilState } from "recoil"
+import { TodoListAtom } from "../atoms/TodoListAtom"
+
 //カスタムHookを読み込み
 import { useImageGet } from "../hook/useImageGet"
 
@@ -44,12 +48,11 @@ export const TodoRegister = () => {
   //  初期値Todoの終了日のvalueを空にセット、状態を格納する変数setEndDateをセット
   const [endDate, setEndDate] = useState(undefined)
 
-  // 初期値incompTodosにオブジェクト型の空配列をセット、状態をsetIncompleteTodosに格納する
-  // const [incompleteTodos, setIncompleteTodos] = useState([])
-
   // グローバルStateの変数 incompleteTodos,関数setIncompleteTodosをuseContext利用で取り出す。
   const { incompleteTodos, setIncompleteTodos } = useContext(TodoListContext)
-  console.log(incompleteTodos)
+
+  // atomから呼び出した変数TodoListAtomを初期値にし、useRecoilStateを使ってstate管理を行う。
+  const [incompleteAtom, setIncompleteAtom] = useRecoilState(TodoListAtom)
 
   // カスタムHookから変数useImage,関数imageFetchを取得
   const { useImage, imageFetch } = useImageGet()
@@ -95,6 +98,27 @@ export const TodoRegister = () => {
     setEndDate(day.toLocaleDateString())
   }
 
+  // Recoilで呼び出したAtomを格納した変数incompleteAtomを使ってTodoリストを格納する。
+  const onAddTodoATom = () => {
+    if (newTodo === "") return
+    const newTodos = [
+      ...incompleteAtom,
+      {
+        id: incompleteAtom.length,
+        todo: newTodo,
+        completeFlag: false,
+        from: startDate,
+        end: endDate,
+      },
+    ]
+    setIncompleteAtom(newTodos) // setIncompleteTodosにnewTodosの状態を登録
+    setNewTodo("") // setNewTodoに空の状態を登録
+    toast.success("Todoを登録しました.")
+    setStartDate(undefined) // 開始日をリセット
+    setEndDate(undefined) // 終了日をリセット
+    console.log(incompleteAtom)
+  }
+
   return (
     <div css={registerStyle}>
       <h2>Todo登録</h2>
@@ -129,6 +153,9 @@ export const TodoRegister = () => {
       />
       {/* Buttonコンポーネントにアロー関数で関数onAddTodoをPropsで渡す。 */}
       <Button onClickEvent={() => onAddTodo()}>登録</Button>
+
+      {/* Buttonコンポーネントにアロー関数で関数onAddTodoATom()をPropsで渡す。 */}
+      <Button onClickEvent={() => onAddTodoATom()}>登録Recoil</Button>
       <Toaster />
       {/* LinkTextコンポーネントを呼び出す。destinationにリンク先、linkNameにリンク名、格納した配列をlinkStateにPropで渡す */}
       {/* <LinkText destination={"/todolist"} linkState={incompleteTodos}>
