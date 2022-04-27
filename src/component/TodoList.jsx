@@ -67,6 +67,7 @@ export const TodoList = () => {
       deleteTodos.splice(index, 1) // index番号から１番目の要素を削除
       // グローバルStateにdeleteTodosを格納
       setIncompleteAtom(deleteTodos)
+      console.log(incompleteAtom)
     },
     // [todoLists]
     // 第二引数にグローバルStateにdeleteTodosを格納
@@ -75,11 +76,22 @@ export const TodoList = () => {
 
   // todoリストを完了（completeFlagをTrueにする）
   const onCompleteTodoAtom = (index) => {
-    const completeTodos = [...incompleteAtom]
-    completeTodos[index].completeFlag = true
+    const completeTodos = [...incompleteAtom] // 削除する対象のデータ配列を関数deleteTodoに格納
+    completeTodos.splice(index, 1) // index番号から１番目の要素を削除 →「完了」フラグのTodoを一度消去
 
-    setIncompleteAtom(completeTodos)
-    console.log(incompleteAtom)
+    // 完了したTodoを作成（completeFlag: trueとしたTodo）
+    const completeTodo = {
+      id: incompleteAtom[index].id,
+      todo: incompleteAtom[index].todo,
+      completeFlag: true,
+      from: incompleteAtom[index].from,
+      end: incompleteAtom[index].end,
+    }
+    // completeTodoをindexの位置に挿入
+    completeTodos.splice(index, 0, completeTodo)
+
+    // スプレット構文を使い、incompleteAtomを更新
+    setIncompleteAtom(() => [...completeTodos])
   }
 
   // カスタムHookから変数useImage,関数imageFetchを取得
@@ -116,11 +128,13 @@ export const TodoList = () => {
               <p>{todos.end}</p>
               <p>{todos.todo}</p>
               {/* Buttonコンポーネントにアロー関数で関数onDeleteTodo(index)をPropsで渡す。indexは引数 */}
-              <Button onClickEvent={() => onDeleteTodo(index)}>削除</Button>
+              <Button onClickEvent={() => onDeleteTodo(index)}>
+                削除(Recoil)
+              </Button>
               {/* Buttonコンポーネントにアロー関数で関数onCompleteTodo(index)をPropsで渡す。indexは引数 */}
               {/* <Button onClickEvent={() => onCompleteTodo(index)}>完了</Button> */}
               <Button onClickEvent={() => onCompleteTodoAtom(index)}>
-                完了Atom
+                完了(Recoil)
               </Button>
             </StyledList>
           )
