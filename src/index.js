@@ -11,13 +11,16 @@ const rootElement = document.getElementById("root")
 const root = createRoot(rootElement)
 
 // グローバルStateをImport
-import { TodoListProvider } from "./component/providers/TodoListProvider"
+// import { TodoListProvider } from "./component/providers/TodoListProvider"
+
+// グローバルStateをRecoilとして利用するため、それをインポート
+import { RecoilRoot } from "recoil"
 
 root.render(
   <StrictMode>
-    <TodoListProvider>
+    <RecoilRoot>
       <App />
-    </TodoListProvider>
+    </RecoilRoot>
   </StrictMode>
 )
 
