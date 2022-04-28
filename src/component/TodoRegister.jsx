@@ -1,8 +1,8 @@
 // "@emotion/react"には以下が必須
 /** @jsxImportSource @emotion/react */
 
-import { useState } from "react"
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
+// import { useEffect } from "react"
 import toast, { Toaster } from "react-hot-toast"
 import { css } from "@emotion/react"
 import { DayPicker } from "react-day-picker" // react-day-picker：v8.0.１
@@ -17,11 +17,6 @@ import { TodoListAtom } from "../atoms/TodoListAtom"
 
 //カスタムHookを読み込み
 import { useImageGet } from "../hook/useImageGet"
-
-//グローバルStateを使う為のuseContextを読み込み
-//TodoListContextを読み込み
-import { useContext } from "react"
-import { TodoListContext } from "./providers/TodoListProvider"
 
 export const TodoRegister = () => {
   const registerStyle = css`
@@ -48,9 +43,6 @@ export const TodoRegister = () => {
   //  初期値Todoの終了日のvalueを空にセット、状態を格納する変数setEndDateをセット
   const [endDate, setEndDate] = useState(undefined)
 
-  // グローバルStateの変数 incompleteTodos,関数setIncompleteTodosをuseContext利用で取り出す。
-  const { incompleteTodos, setIncompleteTodos } = useContext(TodoListContext)
-
   // atomから呼び出した変数TodoListAtomを初期値にし、useRecoilStateを使ってstate管理を行う。
   const [incompleteAtom, setIncompleteAtom] = useRecoilState(TodoListAtom)
 
@@ -64,26 +56,6 @@ export const TodoRegister = () => {
 
   // todoタスクのテキストボックスで入力した値を保存する
   const changeValue = (e) => setNewTodo(e.target.value)
-
-  // onAddTodoを実施して、incompleteTodosでtodoリスト、完了フラグ、開始日、終了日を格納
-  const onAddTodo = () => {
-    if (newTodo === "") return
-    const newTodos = [
-      ...incompleteTodos,
-      {
-        id: incompleteTodos.length,
-        todo: newTodo,
-        completeFlag: false,
-        from: startDate,
-        end: endDate,
-      },
-    ]
-    setIncompleteTodos(newTodos) // setIncompleteTodosにnewTodosの状態を登録
-    setNewTodo("") // setNewTodoに空の状態を登録
-    toast.success("Todoを登録しました.")
-    setStartDate(undefined) // 開始日をリセット
-    setEndDate(undefined) // 終了日をリセット
-  }
 
   // 開始日の状態を保存
   // onDayClickのイベントハンドラーはdayという引数で日程を取得可能
@@ -111,12 +83,11 @@ export const TodoRegister = () => {
         end: endDate,
       },
     ]
-    setIncompleteAtom(newTodos) // setIncompleteTodosにnewTodosの状態を登録
+    setIncompleteAtom(newTodos) // setIncompleteAtomにnewTodosの状態を登録
     setNewTodo("") // setNewTodoに空の状態を登録
     toast.success("Todoを登録しました.")
     setStartDate(undefined) // 開始日をリセット
     setEndDate(undefined) // 終了日をリセット
-    console.log(incompleteAtom)
   }
 
   return (
@@ -151,16 +122,10 @@ export const TodoRegister = () => {
         value={newTodo}
         onChange={changeValue}
       />
-      {/* Buttonコンポーネントにアロー関数で関数onAddTodoをPropsで渡す。 */}
-      <Button onClickEvent={() => onAddTodo()}>登録</Button>
 
       {/* Buttonコンポーネントにアロー関数で関数onAddTodoATom()をPropsで渡す。 */}
-      <Button onClickEvent={() => onAddTodoATom()}>登録Recoil</Button>
+      <Button onClickEvent={() => onAddTodoATom()}>登録(Recoil)</Button>
       <Toaster />
-      {/* LinkTextコンポーネントを呼び出す。destinationにリンク先、linkNameにリンク名、格納した配列をlinkStateにPropで渡す */}
-      {/* <LinkText destination={"/todolist"} linkState={incompleteTodos}>
-        Todo一覧へ
-      </LinkText> */}
       <LinkText destination={"/todolist"}>Todo一覧へ</LinkText>
     </div>
   )

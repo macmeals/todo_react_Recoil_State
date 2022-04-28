@@ -5,8 +5,7 @@ import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import { LinkText } from "./LinkText"
 import { Button } from "./Button"
-import { useCallback } from "react"
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 
 // カスタムHook（JSONPlaceHolder用の）
 import { useTextGet } from "../hook/useTextGet"
@@ -62,24 +61,21 @@ export const TodoList = () => {
   // todoリストを削除する関数onDeleteTodoを定義
   const onDeleteTodo = useCallback(
     (index) => {
-      // const deleteTodos = [...todoLists] // 削除する対象のデータ配列を関数deleteTodoに格納
       const deleteTodos = [...incompleteAtom] // 削除する対象のデータ配列を関数deleteTodoに格納
-      deleteTodos.splice(index, 1) // index番号から１番目の要素を削除
+      deleteTodos.splice(index, 1) // index番号の要素を削除
       // グローバルStateにdeleteTodosを格納
       setIncompleteAtom(deleteTodos)
-      console.log(incompleteAtom)
     },
-    // [todoLists]
     // 第二引数にグローバルStateにdeleteTodosを格納
     [incompleteAtom]
   )
 
   // todoリストを完了（completeFlagをTrueにする）
-  const onCompleteTodoAtom = (index) => {
-    const completeTodos = [...incompleteAtom] // 削除する対象のデータ配列を関数deleteTodoに格納
-    completeTodos.splice(index, 1) // index番号から１番目の要素を削除 →「完了」フラグのTodoを一度消去
+  const onCompleteTodo = (index) => {
+    const completeTodos = [...incompleteAtom] // 削除する対象のデータ配列を関数completeTodosに格納
+    completeTodos.splice(index, 1) // index番号の要素を削除 →対象のTodoを一度消去
 
-    // 完了したTodoを作成（completeFlag: trueとしたTodo）
+    // 完了したTodoを作成（completeFlag: trueとしたTodoを作成）
     const completeTodo = {
       id: incompleteAtom[index].id,
       todo: incompleteAtom[index].todo,
@@ -87,7 +83,7 @@ export const TodoList = () => {
       from: incompleteAtom[index].from,
       end: incompleteAtom[index].end,
     }
-    // completeTodoをindexの位置に挿入
+    // 関数completeTodosにcompleteTodoをindexの位置に挿入
     completeTodos.splice(index, 0, completeTodo)
 
     // スプレット構文を使い、incompleteAtomを更新
@@ -104,14 +100,10 @@ export const TodoList = () => {
   // useJsonがNullの時ブランクで、値が入った段階で、useJson.data[1].titleを返す
   console.log(useJson?.data[1].title ?? "")
 
-  // console.log(useJson.data[1].title)
   return (
     <div css={todoStyle}>
       <h2>Todo一覧</h2>
-      {/* sonPlaceholderの情報を表示 */}
-      {/* <p>{jsontext}</p> */}
       <p>{useJson?.data[1].title ?? ""}</p>
-      {/* <p>{useJson.data[1].title}</p> */}
       <div css={todoTitleStyle}>
         <TodoTitles>
           <p>Todo開始日</p>
@@ -132,8 +124,7 @@ export const TodoList = () => {
                 削除(Recoil)
               </Button>
               {/* Buttonコンポーネントにアロー関数で関数onCompleteTodo(index)をPropsで渡す。indexは引数 */}
-              {/* <Button onClickEvent={() => onCompleteTodo(index)}>完了</Button> */}
-              <Button onClickEvent={() => onCompleteTodoAtom(index)}>
+              <Button onClickEvent={() => onCompleteTodo(index)}>
                 完了(Recoil)
               </Button>
             </StyledList>
