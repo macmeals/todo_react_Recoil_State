@@ -7,7 +7,7 @@ import { LinkText } from "./LinkText"
 import { Button } from "./Button"
 import { useCallback, useEffect } from "react"
 
-// カスタムHook（JSONPlaceHolder用の）
+// カスタムHook（JSONPlaceHolder用）
 import { useTextGet } from "../hook/useTextGet"
 
 //RecoilとAtomを読み込み
@@ -66,29 +66,44 @@ export const TodoList = () => {
       // グローバルStateにdeleteTodosを格納
       setIncompleteAtom(deleteTodos)
     },
-    // 第二引数にグローバルStateにdeleteTodosを格納
     [incompleteAtom]
   )
 
-  // todoリストを完了（completeFlagをTrueにする）
-  const onCompleteTodo = (index) => {
-    const completeTodos = [...incompleteAtom] // 削除する対象のデータ配列を関数completeTodosに格納
-    completeTodos.splice(index, 1) // index番号の要素を削除 →対象のTodoを一度消去
+  // これでも可能
+  // const onCompleteTodo = (index) => {
+  //   const completeTodos = [...incompleteAtom] // 削除する対象のデータ配列を関数completeTodosに格納
+  //   completeTodos.splice(index, 1) // index番号の要素を削除 →対象のTodoを一度消去
 
-    // 完了したTodoを作成（completeFlag: trueとしたTodoを作成）
-    const completeTodo = {
-      id: incompleteAtom[index].id,
-      todo: incompleteAtom[index].todo,
-      completeFlag: true,
-      from: incompleteAtom[index].from,
-      end: incompleteAtom[index].end,
-    }
-    // 関数completeTodosにcompleteTodoをindexの位置に挿入
-    completeTodos.splice(index, 0, completeTodo)
+  //   // 完了したTodoを作成（completeFlag: trueとしたTodoを作成）
+  //   const completeTodo = {
+  //     id: incompleteAtom[index].id,
+  //     todo: incompleteAtom[index].todo,
+  //     completeFlag: true,
+  //     from: incompleteAtom[index].from,
+  //     end: incompleteAtom[index].end,
+  //   }
+  //   // 関数completeTodosにcompleteTodoをindexの位置に挿入
+  //   completeTodos.splice(index, 0, completeTodo)
 
-    // スプレット構文を使い、incompleteAtomを更新
-    setIncompleteAtom(() => [...completeTodos])
-  }
+  //   // スプレット構文を使い、incompleteAtomを更新
+  //   setIncompleteAtom(() => [...completeTodos])
+  // }
+
+  const onCompleteTodo = useCallback(
+    (id) => {
+      {
+        // スプレット構文を使い、incompleteAtomを更新
+        const completeTodos = incompleteAtom.map((item) => {
+          // 対象の要素でない場合、そのまま要素を返却（対象かどうかはidで管理）
+          if (item.id !== id) return { ...item }
+          // 対象の要素の場合、completeFlag: trueを更新して返す（対象かどうかはidで管理）
+          return { ...item, completeFlag: true }
+        })
+        setIncompleteAtom(completeTodos)
+      }
+    },
+    [incompleteAtom]
+  )
 
   // カスタムHookから変数useImage,関数imageFetchを取得
   const { useJson, jsonFetch } = useTextGet()
@@ -123,8 +138,8 @@ export const TodoList = () => {
               <Button onClickEvent={() => onDeleteTodo(index)}>
                 削除(Recoil)
               </Button>
-              {/* Buttonコンポーネントにアロー関数で関数onCompleteTodo(index)をPropsで渡す。indexは引数 */}
-              <Button onClickEvent={() => onCompleteTodo(index)}>
+              {/* Buttonコンポーネントにアロー関数で関数onCompleteTodoを定義。ポイントは引数にidを引き渡す事*/}
+              <Button onClickEvent={() => onCompleteTodo(todos.id)}>
                 完了(Recoil)
               </Button>
             </StyledList>
