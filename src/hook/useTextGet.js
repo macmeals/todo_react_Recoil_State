@@ -9,16 +9,16 @@ const url = "https://jsonplaceholder.typicode.com/todos"
 
 export const useTextGet = () => {
   // useJsonのState初期値はnullとする。
-  const [useJson, setUseJson] = useState(null)
+  const [apiJson, setApiJson] = useState(null)
   const jsonFetch = useCallback(async () => {
     try {
       // JSONPlaceHolderのAPIからユーザーの情報をaxiosで取得
       const response = await axios.get(url)
-      setUseJson(response)
+      setApiJson(response)
     } catch {
       console.log("画像が取得できませんでした")
     }
   }, [])
 
-  return { useJson, jsonFetch } // JSONPlaceHolderの情報を返す
+  return { apiJson, jsonFetch } // JSONPlaceHolderの情報を返す
 }

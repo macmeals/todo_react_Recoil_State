@@ -47,7 +47,7 @@ export const TodoRegister = () => {
   const [incompleteAtom, setIncompleteAtom] = useRecoilState(TodoListAtom)
 
   // カスタムHookから変数useImage,関数imageFetchを取得
-  const { useImage, imageFetch } = useImageGet()
+  const { apiImage, imageFetch } = useImageGet()
 
   // Todoページマウント時のみ関数imageFetch()を実施
   useEffect(() => {
@@ -94,7 +94,7 @@ export const TodoRegister = () => {
     <div css={registerStyle}>
       <h2>Todo登録</h2>
       {/* ピカチュウの画像をImageコンポーネントで呼び出す */}
-      <Image url={useImage.data.sprites.back_female} />
+      <Image url={apiImage.data.sprites.back_female} />
       <div css={matrixStyle}>
         <div css={registerStyle}>
           <p>１．Todo開始日</p>
