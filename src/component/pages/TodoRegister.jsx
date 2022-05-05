@@ -7,16 +7,16 @@ import toast, { Toaster } from "react-hot-toast"
 import { css } from "@emotion/react"
 import { DayPicker } from "react-day-picker" // react-day-picker：v8.0.１
 import "react-day-picker/dist/style.css" // react-day-picker：v8.0.１
-import { LinkText } from "./LinkText"
-import { Button } from "./Button"
-import { Image } from "./Image"
+import { LinkText } from "../LinkText"
+import { Button } from "../Button"
+import { Image } from "../Image"
 
 //Recoilを読み込み
 import { useRecoilState } from "recoil"
-import { TodoListAtom } from "../atoms/TodoListAtom"
+import { TodoListAtom } from "../../atoms/TodoListAtom"
 
 //カスタムHookを読み込み
-import { useImageGet } from "../hook/useImageGet"
+import { useImageGet } from "../../hook/useImageGet"
 
 export const TodoRegister = () => {
   const registerStyle = css`

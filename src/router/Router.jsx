@@ -3,8 +3,8 @@ import { Route, Routes } from "react-router-dom"
 import { TodoRegisterRoutes } from "./TodoRegisterRoutes"
 import { TodoListRoutes } from "./TodoListRoutes"
 import { TodoUpdateRoutes } from "./TodoUpdateRoutes"
-import { TopPage } from "../component/TopPage"
-import { Page404 } from "../component/Page404"
+import { TopPage } from "../component/pages/TopPage"
+import { Page404 } from "../component/pages/Page404"
 
 export const Router = () => {
   return (

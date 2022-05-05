@@ -7,9 +7,9 @@ import { css } from "@emotion/react"
 import { DayPicker } from "react-day-picker" //react-day-picker v8.0.4
 import "react-day-picker/dist/style.css" //react-day-picker v8.0.4
 import { useEffect } from "react"
-import { Image } from "./Image"
+import { Image } from "../Image"
 // カスタムHookを取得
-import { useImageGet } from "../hook/useImageGet"
+import { useImageGet } from "../../hook/useImageGet"
 
 export const TopPage = () => {
   const { useImage, imageFetch } = useImageGet()

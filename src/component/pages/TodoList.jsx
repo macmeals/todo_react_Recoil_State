@@ -3,16 +3,16 @@
 
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
-import { LinkText } from "./LinkText"
-import { Button } from "./Button"
+import { LinkText } from "../LinkText"
+import { Button } from "../Button"
 import { useCallback, useEffect } from "react"
 
 // カスタムHook（JSONPlaceHolder用）
-import { useTextGet } from "../hook/useTextGet"
+import { useTextGet } from "../../hook/useTextGet"
 
 //RecoilとAtomを読み込み
 import { useRecoilState } from "recoil"
-import { TodoListAtom } from "../atoms/TodoListAtom"
+import { TodoListAtom } from "../../atoms/TodoListAtom"
 
 export const TodoList = () => {
   const todoStyle = css`
