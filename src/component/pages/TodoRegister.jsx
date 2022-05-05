@@ -11,9 +11,12 @@ import { LinkText } from "../LinkText"
 import { Button } from "../Button"
 import { Image } from "../Image"
 
-//Recoilを読み込み
+//Recoilを読み込み及び各種ATOMを読み込み
 import { useRecoilState } from "recoil"
 import { TodoListAtom } from "../../atoms/TodoListAtom"
+import { NewTodoAtom } from "../../atoms/NewTodoAtom"
+import { StartDateAtom } from "../../atoms/StartDateAtom"
+import { EndDateAtom } from "../../atoms/EndDateAtom"
 
 //カスタムHookを読み込み
 import { useImageGet } from "../../hook/useImageGet"
@@ -35,13 +38,16 @@ export const TodoRegister = () => {
   `
 
   //  初期値Todoタスクのvalueを空にセット、状態を格納する変数setNewTodoをセット
-  const [newTodo, setNewTodo] = useState("")
+  // const [newTodo, setNewTodo] = useState("")
+  const [newTodoAtom, setNewTodoAtom] = useRecoilState(NewTodoAtom)
 
   //  初期値Todoの開始日のvalueを空にセット、状態を格納する変数setStartDateをセット
-  const [startDate, setStartDate] = useState(undefined)
+  // const [startDate, setStartDate] = useState(undefined)
+  const [startDateAtom, setStartDateAtom] = useRecoilState(StartDateAtom)
 
   //  初期値Todoの終了日のvalueを空にセット、状態を格納する変数setEndDateをセット
-  const [endDate, setEndDate] = useState(undefined)
+  // const [endDate, setEndDate] = useState(undefined)
+  const [endDateAtom, setEndDateAtom] = useRecoilState(EndDateAtom)
 
   // atomから呼び出した変数TodoListAtomを初期値にし、useRecoilStateを使ってstate管理を行う。
   const [incompleteAtom, setIncompleteAtom] = useRecoilState(TodoListAtom)
@@ -55,39 +61,40 @@ export const TodoRegister = () => {
   }, [])
 
   // todoタスクのテキストボックスで入力した値を保存する
-  const changeValue = (e) => setNewTodo(e.target.value)
+  // const changeValue = (e) => setNewTodo(e.target.value)
+  const changeValue = (e) => setNewTodoAtom(e.target.value)
 
   // 開始日の状態を保存
   // onDayClickのイベントハンドラーはdayという引数で日程を取得可能
   // 取得した日程をstartDateの状態を保管
   const handleStartDay = (day) => {
-    setStartDate(day.toLocaleDateString())
+    setStartDateAtom(day.toLocaleDateString())
   }
   // 終了日の状態を保存
   // onDayClickのイベントハンドラーはdayという引数で日程を取得可能
   // 取得した日程をendDateの状態を保管
   const handleEndDay = (day) => {
-    setEndDate(day.toLocaleDateString())
+    setEndDateAtom(day.toLocaleDateString())
   }
 
   // Recoilで呼び出したAtomを格納した変数incompleteAtomを使ってTodoリストを格納する。
   const onAddTodoATom = () => {
-    if (newTodo === "") return
+    if (newTodoAtom === "") return
     const newTodos = [
       ...incompleteAtom,
       {
         id: incompleteAtom.length,
-        todo: newTodo,
+        todo: newTodoAtom,
         completeFlag: false,
-        from: startDate,
-        end: endDate,
+        from: startDateAtom,
+        end: endDateAtom,
       },
     ]
     setIncompleteAtom(newTodos) // setIncompleteAtomにnewTodosの状態を登録
-    setNewTodo("") // setNewTodoに空の状態を登録
+    setNewTodoAtom("") // setNewTodoに空の状態を登録
     toast.success("Todoを登録しました.")
-    setStartDate(undefined) // 開始日をリセット
-    setEndDate(undefined) // 終了日をリセット
+    setStartDateAtom(undefined) // 開始日をリセット
+    setEndDateAtom(undefined) // 終了日をリセット
   }
 
   return (
@@ -99,8 +106,8 @@ export const TodoRegister = () => {
         <div css={registerStyle}>
           <p>１．Todo開始日</p>
           <DayPicker onDayClick={handleStartDay} />
-          {startDate ? (
-            <p> 【Todo開始日】{startDate}</p>
+          {startDateAtom ? (
+            <p> 【Todo開始日】{startDateAtom}</p>
           ) : (
             <p>開始日を選択して下さい</p>
           )}
@@ -108,8 +115,8 @@ export const TodoRegister = () => {
         <div css={registerStyle}>
           <p>２．Todo完了日</p>
           <DayPicker onDayClick={handleEndDay} />
-          {endDate ? (
-            <p>【Todo終了日】{endDate}</p>
+          {endDateAtom ? (
+            <p>【Todo終了日】{endDateAtom}</p>
           ) : (
             <p>終了日を選択して下さい</p>
           )}
@@ -119,7 +126,8 @@ export const TodoRegister = () => {
       <input
         css={inputStyle}
         type="text"
-        value={newTodo}
+        // value={newTodo}
+        value={newTodoAtom}
         onChange={changeValue}
       />
 
