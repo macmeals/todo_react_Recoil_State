@@ -1,9 +1,10 @@
 // "@emotion/react"には以下が必須
 /** @jsxImportSource @emotion/react */
 
-import { useState, useEffect } from "react"
-// import { useEffect } from "react"
+// import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import toast, { Toaster } from "react-hot-toast"
+// import { Toaster } from "react-hot-toast"
 import { css } from "@emotion/react"
 import { DayPicker } from "react-day-picker" // react-day-picker：v8.0.１
 import "react-day-picker/dist/style.css" // react-day-picker：v8.0.１
@@ -12,6 +13,7 @@ import { Button } from "../Button"
 import { Image } from "../Image"
 
 //Recoilを読み込み及び各種ATOMを読み込み
+// import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { useRecoilState } from "recoil"
 import { TodoListAtom } from "../../atoms/TodoListAtom"
 import { NewTodoAtom } from "../../atoms/NewTodoAtom"
@@ -20,6 +22,7 @@ import { EndDateAtom } from "../../atoms/EndDateAtom"
 
 //カスタムHookを読み込み
 import { useImageGet } from "../../hook/useImageGet"
+// import { useAddtodo } from "../../hook/useAddtodo"
 
 export const TodoRegister = () => {
   const registerStyle = css`
@@ -38,15 +41,12 @@ export const TodoRegister = () => {
   `
 
   //  初期値Todoタスクのvalueを空にセット、状態を格納する変数setNewTodoをセット
-  // const [newTodo, setNewTodo] = useState("")
   const [newTodoAtom, setNewTodoAtom] = useRecoilState(NewTodoAtom)
 
   //  初期値Todoの開始日のvalueを空にセット、状態を格納する変数setStartDateをセット
-  // const [startDate, setStartDate] = useState(undefined)
   const [startDateAtom, setStartDateAtom] = useRecoilState(StartDateAtom)
 
   //  初期値Todoの終了日のvalueを空にセット、状態を格納する変数setEndDateをセット
-  // const [endDate, setEndDate] = useState(undefined)
   const [endDateAtom, setEndDateAtom] = useRecoilState(EndDateAtom)
 
   // atomから呼び出した変数TodoListAtomを初期値にし、useRecoilStateを使ってstate管理を行う。
@@ -55,13 +55,15 @@ export const TodoRegister = () => {
   // カスタムHookから変数useImage,関数imageFetchを取得
   const { apiImage, imageFetch } = useImageGet()
 
+  // const { todoFetchAtom } = useAddtodo()
+
   // Todoページマウント時のみ関数imageFetch()を実施
   useEffect(() => {
     imageFetch()
   }, [])
 
   // todoタスクのテキストボックスで入力した値を保存する
-  // const changeValue = (e) => setNewTodo(e.target.value)
+  // const setNewTodoAtom = useSetRecoilState(NewTodoAtom)
   const changeValue = (e) => setNewTodoAtom(e.target.value)
 
   // 開始日の状態を保存
@@ -133,6 +135,7 @@ export const TodoRegister = () => {
 
       {/* Buttonコンポーネントにアロー関数で関数onAddTodoATom()をPropsで渡す。 */}
       <Button onClickEvent={() => onAddTodoATom()}>登録(Recoil)</Button>
+      {/* <Button onClickEvent={() => todoFetchAtom()}>登録2(Recoil)</Button> */}
       <Toaster />
       <LinkText destination={"/todolist"}>Todo一覧へ</LinkText>
     </div>
