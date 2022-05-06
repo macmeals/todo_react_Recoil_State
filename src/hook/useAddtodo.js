@@ -40,8 +40,5 @@ export const useAddtodo = () => {
     setEndDateAtom(undefined) // 終了日をリセット
   }
 
-  // テキストを読み込む
-  // const valueFetchAtom = (e) => setNewTodoAtom(e.target.value)
-
   return { todoFetchAtom }
 }

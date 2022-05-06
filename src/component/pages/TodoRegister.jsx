@@ -22,7 +22,7 @@ import { EndDateAtom } from "../../atoms/EndDateAtom"
 
 //カスタムHookを読み込み
 import { useImageGet } from "../../hook/useImageGet"
-// import { useAddtodo } from "../../hook/useAddtodo"
+import { useAddtodo } from "../../hook/useAddtodo"
 
 export const TodoRegister = () => {
   const registerStyle = css`
@@ -55,7 +55,8 @@ export const TodoRegister = () => {
   // カスタムHookから変数useImage,関数imageFetchを取得
   const { apiImage, imageFetch } = useImageGet()
 
-  // const { todoFetchAtom } = useAddtodo()
+  // カスタムHookから,関数todoFetchAtomを取得
+  const { todoFetchAtom } = useAddtodo()
 
   // Todoページマウント時のみ関数imageFetch()を実施
   useEffect(() => {
@@ -80,6 +81,7 @@ export const TodoRegister = () => {
   }
 
   // Recoilで呼び出したAtomを格納した変数incompleteAtomを使ってTodoリストを格納する。
+  // >>>>この部分はuseAddtodoへ移動予定。まだ移動させていません >>>>>>>
   const onAddTodoATom = () => {
     if (newTodoAtom === "") return
     const newTodos = [
@@ -99,6 +101,7 @@ export const TodoRegister = () => {
     setEndDateAtom(undefined) // 終了日をリセット
   }
 
+  // >>>> ここまでuseAddtodoへ移動予定。まだ移動させていません >>>>>>>
   return (
     <div css={registerStyle}>
       <h2>Todo登録</h2>
@@ -135,7 +138,7 @@ export const TodoRegister = () => {
 
       {/* Buttonコンポーネントにアロー関数で関数onAddTodoATom()をPropsで渡す。 */}
       <Button onClickEvent={() => onAddTodoATom()}>登録(Recoil)</Button>
-      {/* <Button onClickEvent={() => todoFetchAtom()}>登録2(Recoil)</Button> */}
+      <Button onClickEvent={() => todoFetchAtom()}>登録2(Recoil)</Button>
       <Toaster />
       <LinkText destination={"/todolist"}>Todo一覧へ</LinkText>
     </div>
