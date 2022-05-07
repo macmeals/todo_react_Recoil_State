@@ -106,19 +106,17 @@ export const TodoList = () => {
   )
 
   // カスタムHookから変数useImage,関数imageFetchを取得
-  const { apiJson, jsonFetch } = useTextGet()
+  const { textTitle, jsonFetch } = useTextGet()
 
   // TodoList.jsx時のみ関数jsonFetch()を実施
   useEffect(() => {
     jsonFetch()
   }, [])
-  // useJsonがNullの時ブランクで、値が入った段階で、useJson.data[1].titleを返す
-  console.log(apiJson?.data[1].title ?? "")
 
   return (
     <div css={todoStyle}>
       <h2>Todo一覧</h2>
-      <p>{apiJson?.data[1].title ?? ""}</p>
+      <p>{textTitle}</p>
       <div css={todoTitleStyle}>
         <TodoTitles>
           <p>Todo開始日</p>

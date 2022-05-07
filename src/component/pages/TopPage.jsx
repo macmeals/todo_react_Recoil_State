@@ -12,7 +12,7 @@ import { Image } from "../Image"
 import { useImageGet } from "../../hook/useImageGet"
 
 export const TopPage = () => {
-  const { apiImage, imageFetch } = useImageGet()
+  const { apiPokemonfront, imageFetch } = useImageGet()
 
   // Todoページマウント時のみ関数imageFetch()を実施
   useEffect(() => {
@@ -31,7 +31,7 @@ export const TopPage = () => {
         <h1>Todoアプリ</h1>
         <Link to="/todoregister">Todo登録</Link>
         <DayPicker />
-        <Image url={apiImage.data.sprites.front_default} />
+        <Image url={apiPokemonfront} />
       </div>
     </div>
   )

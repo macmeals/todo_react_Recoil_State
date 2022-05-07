@@ -8,19 +8,23 @@ import { useCallback } from "react"
 const url = "https://pokeapi.co/api/v2/pokemon/25"
 
 export const useImageGet = () => {
-  // useImageのState初期値は更新する値のオブジェクトの方に合わせる（空のオブジェクトを格納する）
-  // 取得する多段オブジェクトに合わせる。
-  const [apiImage, setApiImage] = useState({ data: { sprites: {} } })
+  //  ポケモンAPIからのピカチュウの画像URLをstate管理する
+  const [apiPokemonfront, setApiPokemonfront] = useState("") // →前面画像のURLのstate管理
+  const [apiPokemonBack, setApiPokemonBack] = useState("") // →背面画像のURLのstate管理
   const imageFetch = useCallback(async () => {
     try {
-      // // ポケモンAPIからピカチュウの情報をaxiosで取得
+      //  ポケモンAPIからピカチュウの情報をaxiosで取得
       const response = await axios.get(url)
+      //  ピカチュウの前面、背面のURLを取得
+      const frontUrl = response.data.sprites.front_default
+      const backUrl = response.data.sprites.back_female
       // ポケモンAPIのピカチュウ情報を格納
-      setApiImage(response)
+      setApiPokemonfront(frontUrl)
+      setApiPokemonBack(backUrl)
     } catch {
       console.log("画像が取得できませんでした")
     }
   }, [])
 
-  return { apiImage, imageFetch } // ポケモンAPI取得の関数を返す
+  return { apiPokemonfront, apiPokemonBack, imageFetch } // 関数と前面、背面のURLを返す
 }
